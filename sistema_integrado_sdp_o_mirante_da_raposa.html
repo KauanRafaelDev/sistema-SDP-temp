@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDP - Sociedade de Debates Potiguar | O Mirante da Raposa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fox: {
+                            50: '#fff8f3',
+                            100: '#ffeedd',
+                            200: '#ffd8b3',
+                            300: '#ffb97d',
+                            400: '#ff8c3b',
+                            500: '#ff6b00', // Primary Accent
+                            600: '#e65100',
+                            700: '#cc3f00',
+                            800: '#8c2800',
+                            900: '#2c1810', // Deep Dark Base
+                            dark: '#1a0d08'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #2c1810;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+        .fox-gradient {
+            background: linear-gradient(135deg, #ff6b00 0%, #e65100 50%, #8c2800 100%);
+        }
+        .fox-card {
+            background: rgba(44, 24, 16, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 107, 0, 0.2);
+        }
+        .fox-card:hover {
+            border-color: rgba(255, 107, 0, 0.4);
+        }
+        .fox-glass {
+            background: rgba(26, 13, 8, 0.85);
+            backdrop-filter: blur(16px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0d08;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e65100;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6b00;
+        }
+        .active-tab {
+            border-bottom: 3px solid #ff6b00;
+            color: #ff6b00 !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-fox-dark text-slate-100">
+
+    <!-- Top Role Simulator Bar (Mandatory for multi-role dynamic testing) -->
+    <div id="role-bar" class="bg-gradient-to-r from-fox-900 via-fox-800 to-fox-900 border-b border-fox-500/30 text-xs py-2 px-4 flex flex-wrap justify-between items-center z-50 sticky top-0">
+        <div class="flex items-center space-x-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-fox-200 font-medium">Modo de Simulação SDP:</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <label for="role-select" class="text-slate-300 font-medium">Nível de Acesso Ativo:</label>
+            <select id="role-select" onchange="switchRole(this.value)" class="bg-fox-dark border border-fox-500/50 rounded px-2 py-1 text-xs text-fox-300 focus:outline-none focus:border-fox-500">
+                <option value="raposinha">🦊 Raposinha (Membro)</option>
+                <option value="pasta">📚 Pasta de Debates (Conteúdo)</option>
+                <option value="diretor">📊 Diretor (Gestão & Analytics)</option>
+                <option value="admin">⚡ Admin (Acesso Total)</option>
+            </select>
+            <span id="user-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-fox-500/20 text-fox-300 border border-fox-500/40">Membro</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="bg-fox-900/90 border-b border-fox-800 sticky top-[33px] z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 rounded-xl fox-gradient flex items-center justify-center text-white text-xl shadow-lg shadow-fox-500/30">
+                    🦊
+                </div>
+                <div>
+                    <span class="font-display text-xl font-bold tracking-wider text-white">SDP<span class="text-fox-500">.</span></span>
+                    <span class="block text-[9px] text-fox-300 uppercase font-semibold tracking-widest">Sociedade de Debates Potiguar</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex space-x-1 lg:space-x-3 text-sm font-medium">
+                <!-- Links Públicos -->
+                <button onclick="navigateTo('home')" class="nav-btn nav-context-public px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="home"><i class="fa-solid fa-house mr-1"></i> Home</button>
+                <button onclick="navigateTo('sobre')" class="nav-btn nav-context-public px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="sobre"><i class="fa-solid fa-users mr-1"></i> Sobre a SDP</button>
+                <button onclick="navigateTo('rastros')" class="nav-btn nav-context-public px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="rastros"><i class="fa-solid fa-paw mr-1"></i> Nossos Rastros</button>
+                <button onclick="navigateTo('mirante')" class="nav-btn nav-context-public px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300 border border-fox-500/30 bg-fox-500/10" data-page="mirante-bridge"><i class="fa-solid fa-mountain-sun mr-1 text-fox-500"></i> Acessar Mirante</button>
+                
+                <!-- Links Internos (Mirante) -->
+                <button onclick="navigateTo('mirante')" class="nav-btn nav-context-internal hidden px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="mirante"><i class="fa-solid fa-mountain-sun mr-1 text-fox-500"></i> Mirante</button>
+                <button onclick="navigateTo('formacoes')" class="nav-btn nav-context-internal hidden px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="formacoes"><i class="fa-solid fa-graduation-cap mr-1"></i> Formações</button>
+                <button onclick="navigateTo('mocoes')" class="nav-btn nav-context-internal hidden px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="mocoes"><i class="fa-solid fa-comments mr-1"></i> Banco de Moções</button>
+                <button onclick="navigateTo('ps')" class="nav-btn nav-context-internal hidden px-3 py-2 rounded-lg transition hover:text-fox-400 text-slate-300" data-page="ps"><i class="fa-solid fa-microphone mr-1"></i> Banco PS</button>
+                
+                <!-- Director Only -->
+                <button id="nav-diretor" onclick="navigateTo('acompanhamento')" class="nav-btn hidden px-3 py-2 rounded-lg transition bg-fox-500/10 text-fox-400 border border-fox-500/30 hover:bg-fox-500/20" data-page="acompanhamento"><i class="fa-solid fa-chart-line mr-1"></i> Acompanhamento</button>
+            </nav>
+
+            <!-- User Auth Buttons -->
+            <div class="flex items-center space-x-3">
+                <button id="btn-login-trigger" onclick="openModal('modal-login')" class="px-4 py-2 text-sm font-semibold rounded-lg fox-gradient text-white shadow-md hover:opacity-90 transition">
+                    <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Entrar
+                </button>
+                
+                <div id="user-profile-menu" class="hidden items-center space-x-3">
+                    <button onclick="viewMyProfile()" class="flex items-center space-x-2 text-sm text-slate-300 hover:text-white bg-fox-800/60 px-3 py-1.5 rounded-lg border border-fox-700">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Avatar" class="w-6 h-6 rounded-full object-cover">
+                        <span id="nav-user-name" class="font-medium text-xs">Clara Raposa</span>
+                    </button>
+                    <button onclick="logoutUser()" class="text-slate-400 hover:text-rose-400 p-2 transition" title="Sair">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile menu toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-fox-900 border-b border-fox-800 px-4 pt-2 pb-4 space-y-2">
+            <!-- Links Públicos -->
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="nav-btn nav-context-public block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="home"><i class="fa-solid fa-house mr-2 w-4 text-center"></i> Home</button>
+            <button onclick="navigateTo('sobre'); toggleMobileMenu()" class="nav-btn nav-context-public block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="sobre"><i class="fa-solid fa-users mr-2 w-4 text-center"></i> Sobre a SDP</button>
+            <button onclick="navigateTo('rastros'); toggleMobileMenu()" class="nav-btn nav-context-public block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="rastros"><i class="fa-solid fa-paw mr-2 w-4 text-center"></i> Nossos Rastros</button>
+            <button onclick="navigateTo('mirante'); toggleMobileMenu()" class="nav-btn nav-context-public block w-full text-left px-3 py-2 rounded text-fox-400 bg-fox-500/10 border border-fox-500/30" data-page="mirante-bridge"><i class="fa-solid fa-mountain-sun mr-2 w-4 text-center"></i> Acessar Mirante</button>
+
+            <!-- Links Internos -->
+            <button onclick="navigateTo('mirante'); toggleMobileMenu()" class="nav-btn nav-context-internal hidden block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="mirante"><i class="fa-solid fa-mountain-sun mr-2 w-4 text-center"></i> Mirante (Resumo)</button>
+            <button onclick="navigateTo('formacoes'); toggleMobileMenu()" class="nav-btn nav-context-internal hidden block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="formacoes"><i class="fa-solid fa-graduation-cap mr-2 w-4 text-center"></i> Formações</button>
+            <button onclick="navigateTo('mocoes'); toggleMobileMenu()" class="nav-btn nav-context-internal hidden block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="mocoes"><i class="fa-solid fa-comments mr-2 w-4 text-center"></i> Banco de Moções</button>
+            <button onclick="navigateTo('ps'); toggleMobileMenu()" class="nav-btn nav-context-internal hidden block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="ps"><i class="fa-solid fa-microphone mr-2 w-4 text-center"></i> Banco PS</button>
+            <button id="mobile-nav-diretor" onclick="navigateTo('acompanhamento'); toggleMobileMenu()" class="nav-btn hidden block w-full text-left px-3 py-2 rounded text-slate-300 hover:bg-fox-800" data-page="acompanhamento"><i class="fa-solid fa-chart-line mr-2 w-4 text-center"></i> Acompanhamento (Diretor)</button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= PAGE 1: HOME (LANDING PAGE) ================= -->
+        <section id="page-home" class="page-content space-y-16">
+            <!-- Hero Section -->
+            <div class="relative rounded-3xl overflow-hidden fox-card p-8 md:p-16 border border-fox-500/30 shadow-2xl flex flex-col md:flex-row items-center justify-between">
+                <div class="absolute -top-24 -left-24 w-72 h-72 bg-fox-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="md:w-3/5 space-y-6 z-10">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-fox-500/20 text-fox-400 border border-fox-500/30">
+                        <i class="fa-solid fa-fire mr-1"></i> Sociedade de Debates Potiguar
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                        Afie sua Mente. <br/>
+                        <span class="text-transparent bg-clip-text fox-gradient">Domine a Palavra.</span>
+                    </h1>
+                    <p class="text-slate-300 text-lg max-w-xl">
+                        A plataforma de excelência em oratória, argumentação no Modelo Parlamento Britânico (BP) e Public Speaking. Entre para a Toca e evolua com métricas e feedbacks diretos.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="navigateTo('mirante')" class="px-6 py-3 rounded-xl fox-gradient text-white font-bold shadow-lg shadow-fox-500/30 hover:scale-105 transition">
+                            <i class="fa-solid fa-compass mr-2"></i> Acessar o Mirante
+                        </button>
+                        <button onclick="navigateTo('sobre')" class="px-6 py-3 rounded-xl bg-fox-800/80 hover:bg-fox-800 text-slate-200 border border-fox-700 font-semibold transition">
+                            Conhecer a SDP
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-2/5 mt-8 md:mt-0 flex justify-center z-10">
+                    <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-2xl fox-gradient p-1 shadow-2xl rotate-3 hover:rotate-0 transition duration-500">
+                        <div class="w-full h-full bg-fox-dark rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+                            <div class="text-7xl mt-4">🦊</div>
+                            <div class="space-y-1">
+                                <p class="font-display font-bold text-xl text-fox-300">A Toca da Raposa</p>
+                                <p class="text-xs text-slate-400">Excelência em Debates & Oratória Acadêmica</p>
+                            </div>
+                            <div class="w-full bg-fox-900/80 p-3 rounded-xl border border-fox-500/20 text-xs flex justify-between">
+                                <span><strong class="text-fox-400">120+</strong> Debates</span>
+                                <span><strong class="text-fox-400">15+</strong> Títulos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Highlights -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-fox-500/20 text-fox-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Formato BP & PS</h3>
+                    <p class="text-slate-400 text-sm">Treinos estruturados no formato British Parliamentary e discursos individuais com avaliação de 5 competências chave.</p>
+                </div>
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-fox-500/20 text-fox-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Analytics Pessoal</h3>
+                    <p class="text-slate-400 text-sm">Acompanhe sua evolução de Speaker Points, posicionamentos nas rodadas e feedbacks através do Mirante da Raposa.</p>
+                </div>
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-fox-500/20 text-fox-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-user-ninja"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Mentoria de Diretores</h3>
+                    <p class="text-slate-400 text-sm">Diretores acompanham suas estatísticas individualmente e recomendam formações personalizadas na plataforma.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: SOBRE A SDP ================= -->
+        <section id="page-sobre" class="page-content hidden space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h1 class="text-4xl font-extrabold font-display">Sobre a <span class="text-fox-500">SDP</span></h1>
+                <p class="text-slate-300 text-lg">Conheça a história e a missão da Sociedade de Debates Potiguar.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="fox-card p-8 rounded-2xl border border-fox-500/20 space-y-4">
+                    <h2 class="text-2xl font-bold text-fox-400"><i class="fa-solid fa-shield-halved mr-2"></i> Nossa Missão</h2>
+                    <p class="text-slate-300 leading-relaxed">
+                        A SDP nasceu com o propósito de democratizar o acesso ao debate competitivo de alto nível, capacitando os alunos na arte do pensamento crítico, oratória perspicaz e escuta ativa.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Utilizamos a metáfora da Raposa (perspicácia, agilidade e inteligência estratégica) para representar nossos debatedores que se destacam em campeonatos nacionais e internacionais.
+                    </p>
+                </div>
+                <div class="fox-card p-8 rounded-2xl border border-fox-500/20 space-y-6">
+                    <h2 class="text-2xl font-bold text-fox-400"><i class="fa-solid fa-star mr-2"></i> Pilares da Toca</h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2 rounded bg-fox-500/20 text-fox-400"><i class="fa-solid fa-comments"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">Modelo BP (British Parliamentary)</h4>
+                                <p class="text-xs text-slate-400">Quatro duplas competindo em tempo real com moções de alta complexidade política e filosófica.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2 rounded bg-fox-500/20 text-fox-400"><i class="fa-solid fa-bullhorn"></i></div>
+                            <div>
+                                <h4 class="font-bold text-white">Public Speaking (PS)</h4>
+                                <p class="text-xs text-slate-400">Desenvolvimento de linguagem corporal, modulação de voz, engajamento de plateia e estrutura analítica.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: NOSSOS RASTROS (HISTÓRICO PÚBLICO) ================= -->
+        <section id="page-rastros" class="page-content hidden space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-6">
+                <div>
+                    <h1 class="text-3xl font-bold font-display flex items-center gap-2">
+                        <span>🐾</span> Nossos Rastros <span class="text-xs px-2 py-1 rounded-full bg-fox-500/20 text-fox-400 border border-fox-500/30">Fase 2</span>
+                    </h1>
+                    <p class="text-slate-400 text-sm">Histórico público de conquistas, campeonatos e marcos da Sociedade de Debates Potiguar.</p>
+                </div>
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterRastros('all')" class="rastro-filter-btn active-tab px-3 py-1.5 rounded-lg text-xs font-semibold bg-fox-800 hover:bg-fox-700 text-slate-200">Todos</button>
+                    <button onclick="filterRastros('presencial')" class="rastro-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-fox-800 hover:bg-fox-700 text-slate-200">Presenciais</button>
+                    <button onclick="filterRastros('online')" class="rastro-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-fox-800 hover:bg-fox-700 text-slate-200">On-line</button>
+                    <button onclick="filterRastros('toca')" class="rastro-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-fox-800 hover:bg-fox-700 text-slate-200">Torneios da Toca</button>
+                </div>
+            </div>
+
+            <!-- Grid de Conquistas -->
+            <div id="grid-rastros" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Rastro Item 1 -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition rastro-item" data-cat="presencial">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fa-solid fa-trophy mr-1"></i> Campeão Geral</span>
+                        <span class="text-xs text-slate-400">Outubro 2025</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mb-1">Campeonato Brasileiro de Debates</h3>
+                    <p class="text-xs text-fox-400 font-medium mb-3">Modalidade Presencial • São Paulo</p>
+                    <p class="text-slate-300 text-sm mb-4">Dupla "Raposas do Cerrado" conquistou o 1º lugar após 6 rodadas classificatórias e final de alto nível.</p>
+                    <div class="pt-3 border-t border-fox-800 text-xs text-slate-400 flex justify-between">
+                        <span>Debatedores: Clara & Marcos</span>
+                        <span class="text-fox-400">BP Master</span>
+                    </div>
+                </div>
+
+                <!-- Rastro Item 2 -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition rastro-item" data-cat="online">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i class="fa-solid fa-medal mr-1"></i> Finalista</span>
+                        <span class="text-xs text-slate-400">Agosto 2025</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mb-1">Torneio Internacional de Oratória Online</h3>
+                    <p class="text-xs text-fox-400 font-medium mb-3">Modalidade On-line • Zoom</p>
+                    <p class="text-slate-300 text-sm mb-4">Top 3 na categoria de Public Speaking com mais de 80 participantes da América Latina.</p>
+                    <div class="pt-3 border-t border-fox-800 text-xs text-slate-400 flex justify-between">
+                        <span>Membro: Rafael Lima</span>
+                        <span class="text-fox-400">Public Speaking</span>
+                    </div>
+                </div>
+
+                <!-- Rastro Item 3 -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 hover:border-fox-500/50 transition rastro-item" data-cat="toca">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2.5 py-1 rounded text-[10px] font-bold bg-fox-500/20 text-fox-300 border border-fox-500/30"><i class="fa-solid fa-crown mr-1"></i> Edição Interna</span>
+                        <span class="text-xs text-slate-400">Janeiro 2026</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mb-1">I Torneio Interno da Toca SDP</h3>
+                    <p class="text-xs text-fox-400 font-medium mb-3">Campeonato Interno • Sede SDP</p>
+                    <p class="text-slate-300 text-sm mb-4">Evento de integração focado no treinamento de calouros e raposinhas do Processo Seletivo.</p>
+                    <div class="pt-3 border-t border-fox-800 text-xs text-slate-400 flex justify-between">
+                        <span>Participantes: 32 Membros</span>
+                        <span class="text-fox-400">Treino Toca</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: RESTRITO - O MIRANTE DA RAPOSA ================= -->
+        <section id="page-mirante" class="page-content hidden space-y-8">
+            <!-- Header Mirante Banner -->
+            <div class="relative rounded-2xl fox-card p-6 md:p-8 border border-fox-500/30 overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 text-9xl opacity-10 font-bold select-none pointer-events-none text-fox-500">🦊</div>
+                <div class="relative z-10 space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-fox-500/20 text-fox-400 border border-fox-500/30">Área Restrita</span>
+                        <span class="text-xs text-slate-400">• O Mirante da Raposa</span>
+                    </div>
+                    <h1 class="text-3xl font-extrabold font-display">Bem-vindo(a) ao Mirante, <span id="mirante-user-display" class="text-fox-400">Raposinha</span>!</h1>
+                    <p class="text-slate-300 text-sm max-w-2xl leading-relaxed">
+                        Este é o seu centro de acompanhamento individual. Aqui você registra os debates praticados, monitora a evolução da sua pontuação de speaker (Speaker Points) e recebe recomendações diretas dos Diretores de Capacitação.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Stats Overview -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="fox-card p-5 rounded-xl border border-fox-500/20 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-lg bg-fox-500/20 text-fox-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Debates Avaliados</p>
+                        <p class="text-2xl font-bold text-white">14</p>
+                    </div>
+                </div>
+
+                <div class="fox-card p-5 rounded-xl border border-fox-500/20 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Média Speaker (BP)</p>
+                        <p class="text-2xl font-bold text-white">76.4 <span class="text-xs text-emerald-400">+1.2</span></p>
+                    </div>
+                </div>
+
+                <div class="fox-card p-5 rounded-xl border border-fox-500/20 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-microphone"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Pontuação PS</p>
+                        <p class="text-2xl font-bold text-white">62 <span class="text-xs text-slate-400">/75</span></p>
+                    </div>
+                </div>
+
+                <div class="fox-card p-5 rounded-xl border border-fox-500/20 flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Recomendações</p>
+                        <p class="text-2xl font-bold text-white">2 Pendentes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Hub -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-4">
+                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-fox-500"></i> Ações Rápidas de Prática
+                    </h3>
+                    <p class="text-xs text-slate-400">Acesse o banco de moções ou discurso público para registrar o treino que acabou de fazer.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="navigateTo('mocoes')" class="px-4 py-2 rounded-xl fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                            <i class="fa-solid fa-plus mr-1"></i> Avaliar Moção BP
+                        </button>
+                        <button onclick="navigateTo('ps')" class="px-4 py-2 rounded-xl bg-fox-800 hover:bg-fox-700 border border-fox-600 text-white text-xs font-bold">
+                            <i class="fa-solid fa-plus mr-1"></i> Avaliar Discurso PS
+                        </button>
+                        <button onclick="viewMyProfile()" class="px-4 py-2 rounded-xl bg-fox-900 hover:bg-fox-800 border border-fox-700 text-fox-300 text-xs font-bold">
+                            <i class="fa-solid fa-chart-pie mr-1"></i> Meu Desempenho
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Diretoria Notifications -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bullhorn text-fox-500"></i> Indicação da Diretoria
+                        </h3>
+                        <span class="text-[10px] bg-fox-500/20 text-fox-400 px-2 py-0.5 rounded font-bold">Novo</span>
+                    </div>
+                    <div class="p-3 bg-fox-900/90 rounded-xl border border-fox-800 text-xs space-y-1">
+                        <p class="font-bold text-fox-300">Formação Indicada: "Técnicas Avançadas de PM & Extension"</p>
+                        <p class="text-slate-400">Recomendado por <strong class="text-slate-200">Diretoria de Treino</strong> para fortalecer sua 2ª Fala.</p>
+                        <div class="pt-2">
+                            <button onclick="navigateTo('formacoes')" class="text-xs text-fox-400 hover:underline font-semibold">Ver Formação no Catálogo &rarr;</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: FORMAÇÕES E MATERIAIS ================= -->
+        <section id="page-formacoes" class="page-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
+                <div>
+                    <h1 class="text-3xl font-bold font-display">Módulo de Capacitação</h1>
+                    <p class="text-slate-400 text-sm">Aulas em vídeo, materiais teóricos e guias em PDF.</p>
+                </div>
+                <!-- Director add formation button (Fase 2) -->
+                <button id="btn-add-formacao" onclick="openModal('modal-add-formacao')" class="hidden px-4 py-2 rounded-xl fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> Adicionar Formação / Documento
+                </button>
+            </div>
+
+            <!-- Tabs: BP vs PS -->
+            <div class="flex space-x-4 border-b border-fox-800 text-sm">
+                <button onclick="switchCapacitacaoTab('bp')" id="tab-cap-bp" class="pb-3 px-2 font-bold active-tab">Aba BP (Debate)</button>
+                <button onclick="switchCapacitacaoTab('ps')" id="tab-cap-ps" class="pb-3 px-2 font-bold text-slate-400 hover:text-slate-200">Aba PS (Public Speaking)</button>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-search absolute left-3 top-3 text-slate-500 text-sm"></i>
+                    <input type="text" id="formacao-search" onkeyup="renderFormacoes()" placeholder="Buscar por título, palestrante ou tema..." class="w-full bg-fox-900 border border-fox-800 rounded-xl pl-9 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                </div>
+            </div>
+
+            <!-- Videos Grid Section -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-fox-400 flex items-center gap-2">
+                    <i class="fa-solid fa-video"></i> Aulas & Vídeos Integrados
+                </h3>
+                <div id="grid-videos-formacao" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+            <!-- PDFs Section -->
+            <div class="space-y-4 pt-6">
+                <h3 class="text-lg font-bold text-fox-400 flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf"></i> Materiais de Apoio & PDFs
+                </h3>
+                <div id="grid-pdfs-formacao" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 6: BANCO DE MOÇÕES (BP) ================= -->
+        <section id="page-mocoes" class="page-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
+                <div>
+                    <h1 class="text-3xl font-bold font-display">Banco de Moções <span class="text-xs text-fox-400 font-sans">(Debate BP)</span></h1>
+                    <p class="text-slate-400 text-sm">Consulte temas de torneios anteriores e registre a sua participação em cada rodada.</p>
+                </div>
+                <button id="btn-add-mocao" onclick="openModal('modal-add-mocao')" class="hidden px-4 py-2 rounded-xl fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> Adicionar Moção
+                </button>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input type="text" id="filter-mocao-search" oninput="renderMocoesTable()" placeholder="Pesquisar por título ou infoslide..." class="bg-fox-900 border border-fox-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                <select id="filter-mocao-tipo" onchange="renderMocoesTable()" class="bg-fox-900 border border-fox-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                    <option value="all">Todos os Tipos</option>
+                    <option value="Esta Casa">Esta Casa (EC)</option>
+                    <option value="Esta Casa Apoia">Esta Casa Apoia (ECA)</option>
+                    <option value="Esta Casa Lamenta">Esta Casa Lamenta (ECL)</option>
+                    <option value="Esta Casa Prefere">Esta Casa Prefere (ECP)</option>
+                </select>
+                <select id="filter-mocao-eixo" onchange="renderMocoesTable()" class="bg-fox-900 border border-fox-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                    <option value="all">Todos os Eixos</option>
+                    <option value="Política">Política</option>
+                    <option value="Economia">Economia</option>
+                    <option value="Filosofia">Filosofia</option>
+                    <option value="Direitos Humanos">Direitos Humanos</option>
+                    <option value="Relações Internacionais">Relações Internacionais</option>
+                </select>
+            </div>
+
+            <!-- Moções Table -->
+            <div class="fox-card rounded-2xl border border-fox-500/20 overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-fox-900/90 text-xs uppercase text-fox-400 border-b border-fox-800">
+                        <tr>
+                            <th class="p-4">Moção / Título</th>
+                            <th class="p-4">Infoslide</th>
+                            <th class="p-4">Tipo & Eixo</th>
+                            <th class="p-4">Campeonato</th>
+                            <th class="p-4 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-mocoes" class="divide-y divide-fox-800/60">
+                        <!-- Dynamic content via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 7: BANCO DE PS (PUBLIC SPEAKING) ================= -->
+        <section id="page-ps" class="page-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
+                <div>
+                    <h1 class="text-3xl font-bold font-display">Banco de PS <span class="text-xs text-fox-400 font-sans">(Public Speaking)</span></h1>
+                    <p class="text-slate-400 text-sm">Temas de discursos individuais com foco em oratória e oratória persuasiva.</p>
+                </div>
+                <button id="btn-add-ps" onclick="openModal('modal-add-ps')" class="hidden px-4 py-2 rounded-xl fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> Adicionar Tema PS
+                </button>
+            </div>
+
+            <!-- Filters PS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="text" id="filter-ps-search" oninput="renderPSTable()" placeholder="Pesquisar tema de PS..." class="bg-fox-900 border border-fox-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                <select id="filter-ps-tipo" onchange="renderPSTable()" class="bg-fox-900 border border-fox-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                    <option value="all">Todos os Tipos de Discurso</option>
+                    <option value="Direto">Discurso Direto</option>
+                    <option value="Referenciado">Discurso Referenciado</option>
+                    <option value="Cenário">Análise de Cenário</option>
+                </select>
+            </div>
+
+            <!-- PS Table -->
+            <div class="fox-card rounded-2xl border border-fox-500/20 overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-fox-900/90 text-xs uppercase text-fox-400 border-b border-fox-800">
+                        <tr>
+                            <th class="p-4">Tema do Discurso</th>
+                            <th class="p-4">Tipo de Discurso</th>
+                            <th class="p-4">Campeonato / Evento</th>
+                            <th class="p-4 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ps" class="divide-y divide-fox-800/60">
+                        <!-- Dynamic content via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 8: PERFIL E ESTATÍSTICAS (ANALYTICS MEMBER) ================= -->
+        <section id="page-perfil" class="page-content hidden space-y-8">
+            <!-- Botão de Voltar (Visível apenas quando Diretor acessa via Painel) -->
+            <div id="btn-back-acompanhamento" class="hidden">
+                <button onclick="navigateTo('acompanhamento')" class="px-4 py-2 rounded-lg bg-fox-800 hover:bg-fox-700 text-slate-200 text-sm font-semibold flex items-center transition border border-fox-700 shadow-lg">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Voltar ao Painel de Acompanhamento
+                </button>
+            </div>
+
+            <!-- Profile Info Header -->
+            <div class="fox-card p-6 rounded-2xl border border-fox-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="flex items-center space-x-4">
+                    <img id="perfil-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border-2 border-fox-500">
+                    <div>
+                        <h2 id="perfil-nome" class="text-2xl font-bold font-display text-white">Clara Raposa</h2>
+                        <p id="perfil-email" class="text-xs text-slate-400">clara.raposa@sdp.org.br</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span id="perfil-role-badge" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-fox-500/20 text-fox-400 border border-fox-500/30">Membro Raposinha</span>
+                            <span class="text-xs text-slate-500">• Na SDP desde 2024</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="openModal('modal-edit-perfil')" class="px-4 py-2 rounded-xl bg-fox-800 hover:bg-fox-700 text-slate-200 text-xs font-bold border border-fox-700 transition">
+                    <i class="fa-solid fa-user-gear mr-1"></i> Alterar Dados Cadastrais
+                </button>
+            </div>
+
+            <!-- Dashboard Charts Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Gráfico BP: Historico Colocações & Speaker -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-4">
+                    <div class="flex justify-between items-center border-b border-fox-800 pb-3">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-fox-500"></i> Desempenho BP (Speaker Points)
+                        </h3>
+                        <span class="text-xs text-slate-400">Evolução em Treinos</span>
+                    </div>
+                    <div class="relative h-64">
+                        <canvas id="chart-bp"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center">Média recente de Speaker Points por rodada praticada.</p>
+                </div>
+
+                <!-- Gráfico PS: Evolução de Competências (Radar) -->
+                <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-4">
+                    <div class="flex justify-between items-center border-b border-fox-800 pb-3">
+                        <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-radar text-fox-500"></i> Competências de Oratória (PS)
+                        </h3>
+                        <span class="text-xs text-slate-400">Escala de 1 a 15</span>
+                    </div>
+                    <div class="relative h-64">
+                        <canvas id="chart-ps"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center">Avaliadas em Não-Verbal, Voz, Estrutura, Engajamento e Conteúdo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 9: PAINEL DE ACOMPANHAMENTO (DIRETOR ONLY) ================= -->
+        <section id="page-acompanhamento" class="page-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
+                <div>
+                    <h1 class="text-3xl font-bold font-display text-fox-400 flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear"></i> Painel de Acompanhamento de Raposinhas
+                    </h1>
+                    <p class="text-slate-400 text-sm">Visão exclusiva de Diretores/Admins para monitorar o desenvolvimento do plantel de debatedores.</p>
+                </div>
+            </div>
+
+            <!-- Table of Members -->
+            <div class="fox-card rounded-2xl border border-fox-500/20 overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-fox-900/90 text-xs uppercase text-fox-400 border-b border-fox-800">
+                        <tr>
+                            <th class="p-4">Raposinha (Membro)</th>
+                            <th class="p-4">Debates Avaliados</th>
+                            <th class="p-4">Média Speaker Points</th>
+                            <th class="p-4">Status de Treino</th>
+                            <th class="p-4 text-center">Ações de Gestão</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-acompanhamento" class="divide-y divide-fox-800/60">
+                        <!-- Dynamic content via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODALS SYSTEM ================= -->
+
+    <!-- Modal 1: Login -->
+    <div id="modal-login" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-5 relative">
+            <button onclick="closeModal('modal-login')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="text-center space-y-1">
+                <span class="text-3xl">🦊</span>
+                <h3 class="text-2xl font-bold font-display text-white">Acessar o Mirante</h3>
+                <p class="text-xs text-slate-400">Digite seus dados de membro cadastrado</p>
+            </div>
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">E-mail Cadastrado</label>
+                    <input type="email" id="login-email" required value="raposinha@sdp.org.br" class="w-full bg-fox-900 border border-fox-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Senha</label>
+                    <input type="password" id="login-password" required value="123456" class="w-full bg-fox-900 border border-fox-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-fox-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Entrar na Plataforma</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Avaliar Moção BP -->
+    <div id="modal-avaliar-mocao" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+        <div class="fox-card w-full max-w-lg p-6 rounded-2xl border border-fox-500/30 space-y-5 my-8 relative">
+            <button onclick="closeModal('modal-avaliar-mocao')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div>
+                <h3 class="text-xl font-bold font-display text-fox-400">Avaliar Desempenho na Moção</h3>
+                <p id="eval-mocao-title" class="text-xs text-slate-300 font-semibold mt-1">Título da Moção...</p>
+            </div>
+
+            <form onsubmit="handleMocaoEvaluationSubmit(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Data do Debate *</label>
+                        <input type="date" required class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Modalidade *</label>
+                        <select required class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500">
+                            <option value="Treino">Treino de Toca</option>
+                            <option value="Torneio">Torneio Oficial</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Casa Alocada *</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <label class="flex items-center space-x-1.5 p-2 rounded bg-fox-900 border border-fox-800 cursor-pointer"><input type="radio" name="casa" value="OG" required> <span>OG</span></label>
+                        <label class="flex items-center space-x-1.5 p-2 rounded bg-fox-900 border border-fox-800 cursor-pointer"><input type="radio" name="casa" value="OO"> <span>OO</span></label>
+                        <label class="flex items-center space-x-1.5 p-2 rounded bg-fox-900 border border-fox-800 cursor-pointer"><input type="radio" name="casa" value="CG"> <span>CG</span></label>
+                        <label class="flex items-center space-x-1.5 p-2 rounded bg-fox-900 border border-fox-800 cursor-pointer"><input type="radio" name="casa" value="CO"> <span>CO</span></label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Posição de Fala *</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="posicao" value="1a" required> <span>1ª Fala (Abertura)</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="radio" name="posicao" value="2a"> <span>2ª Fala (Fechamento)</span></label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Resultado (Ordem) *</label>
+                        <input type="text" required placeholder="Ex: OG > CO > OO > CG" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Speaker Points *</label>
+                        <input type="number" step="0.5" min="50" max="100" required placeholder="Ex: 76.5" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tags de Feedback Principal</label>
+                    <div class="grid grid-cols-2 gap-2 text-[11px]">
+                        <label class="flex items-center space-x-1.5"><input type="checkbox" value="Estratégia"> <span>Reforçar Estratégia</span></label>
+                        <label class="flex items-center space-x-1.5"><input type="checkbox" value="Tempo"> <span>Gestão de Tempo</span></label>
+                        <label class="flex items-center space-x-1.5"><input type="checkbox" value="Enquadramento"> <span>Framing / Enquadramento</span></label>
+                        <label class="flex items-center space-x-1.5"><input type="checkbox" value="POI"> <span>Qualidade dos POIs</span></label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Anotações do Adjudicador / Auto-feedback</label>
+                    <textarea rows="3" placeholder="Insira o feedback detalhado recebido na adjudicação..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Salvar Avaliação no Perfil</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Avaliar Tema PS (Competências de Oratória) -->
+    <div id="modal-avaliar-ps" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+        <div class="fox-card w-full max-w-lg p-6 rounded-2xl border border-fox-500/30 space-y-5 my-8 relative">
+            <button onclick="closeModal('modal-avaliar-ps')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div>
+                <h3 class="text-xl font-bold font-display text-fox-400">Avaliar Discurso PS</h3>
+                <p id="eval-ps-title" class="text-xs text-slate-300 font-semibold mt-1">Tema do Discurso...</p>
+            </div>
+
+            <form onsubmit="handlePSEvaluationSubmit(event)" class="space-y-4 text-xs">
+                <p class="text-[11px] text-slate-400 border-b border-fox-800 pb-2">Atribua notas de 1 a 15 para cada competência de oratória:</p>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-slate-300 font-medium">1. Linguagem Não Verbal (1-15)</label>
+                        <input type="number" min="1" max="15" value="12" class="ps-score w-16 bg-fox-900 border border-fox-800 rounded p-1 text-center text-slate-200" onchange="calculatePSTotal()">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-slate-300 font-medium">2. Voz e Fala (1-15)</label>
+                        <input type="number" min="1" max="15" value="13" class="ps-score w-16 bg-fox-900 border border-fox-800 rounded p-1 text-center text-slate-200" onchange="calculatePSTotal()">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-slate-300 font-medium">3. Estrutura do Discurso (1-15)</label>
+                        <input type="number" min="1" max="15" value="11" class="ps-score w-16 bg-fox-900 border border-fox-800 rounded p-1 text-center text-slate-200" onchange="calculatePSTotal()">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-slate-300 font-medium">4. Engajamento da Plateia (1-15)</label>
+                        <input type="number" min="1" max="15" value="14" class="ps-score w-16 bg-fox-900 border border-fox-800 rounded p-1 text-center text-slate-200" onchange="calculatePSTotal()">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <label class="text-slate-300 font-medium">5. Profundidade de Conteúdo (1-15)</label>
+                        <input type="number" min="1" max="15" value="12" class="ps-score w-16 bg-fox-900 border border-fox-800 rounded p-1 text-center text-slate-200" onchange="calculatePSTotal()">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-fox-900 rounded-xl border border-fox-700 flex justify-between items-center">
+                    <span class="font-bold text-slate-200">Pontuação Total Calculada:</span>
+                    <span id="ps-total-display" class="font-bold text-lg text-fox-400">62 / 75</span>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Feedback do Avaliador</label>
+                    <textarea rows="3" placeholder="Anotações de melhoria para próximas apresentações..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Gravar Avaliação PS</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Adicionar Formação (Diretor / Admin) -->
+    <div id="modal-add-formacao" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+            <button onclick="closeModal('modal-add-formacao')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold font-display text-fox-400">Cadastrar Formação ou Material</h3>
+            <form onsubmit="handleAddFormacaoSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Título da Formação</label>
+                    <input type="text" id="new-formacao-title" required placeholder="Ex: Construção de Argumentos de Relevância" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Categoria / Aba</label>
+                    <select id="new-formacao-cat" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                        <option value="bp">Debate BP</option>
+                        <option value="ps">Public Speaking</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tipo de Conteúdo</label>
+                    <select id="new-formacao-type" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                        <option value="video">Aula em Vídeo (YouTube Link)</option>
+                        <option value="pdf">Documento PDF / Apostila</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Link URL (YouTube / Arquivo)</label>
+                    <input type="url" id="new-formacao-url" required placeholder="https://..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Publicar Conteúdo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Adicionar Moção (Diretor / Admin) -->
+    <div id="modal-add-mocao" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+            <button onclick="closeModal('modal-add-mocao')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold font-display text-fox-400">Cadastrar Nova Moção no Banco</h3>
+            <form onsubmit="handleAddMocaoSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Texto da Moção (Título)</label>
+                    <input type="text" id="new-mocao-title" required placeholder="Ex: EC Lamenta a mercantilização de..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Infoslide (Opcional)</label>
+                    <textarea id="new-mocao-infoslide" rows="2" placeholder="Contexto prévio fornecido..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Tipos de Moção</label>
+                        <div id="new-mocao-tipo-container" class="bg-fox-900 border border-fox-800 rounded-lg p-2 max-h-32 overflow-y-auto space-y-1">
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Esta Casa" class="accent-fox-500"> <span class="text-xs">Esta Casa</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Esta Casa Apoia" class="accent-fox-500"> <span class="text-xs">Esta Casa Apoia</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Esta Casa Lamenta" class="accent-fox-500"> <span class="text-xs">Esta Casa Lamenta</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Esta Casa Prefere" class="accent-fox-500"> <span class="text-xs">Esta Casa Prefere</span></label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Eixos Temáticos</label>
+                        <div id="new-mocao-eixo-container" class="bg-fox-900 border border-fox-800 rounded-lg p-2 max-h-32 overflow-y-auto space-y-1">
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Política" class="accent-fox-500"> <span class="text-xs">Política</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Economia" class="accent-fox-500"> <span class="text-xs">Economia</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Filosofia" class="accent-fox-500"> <span class="text-xs">Filosofia</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Direitos Humanos" class="accent-fox-500"> <span class="text-xs">Direitos Humanos</span></label>
+                            <label class="flex items-center space-x-2 cursor-pointer p-1 hover:bg-fox-800 rounded"><input type="checkbox" value="Relações Internacionais" class="accent-fox-500"> <span class="text-xs">Relações Internacionais</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Campeonato de Origem</label>
+                    <input type="text" id="new-mocao-camp" required placeholder="Ex: Brasileirão 2025" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Cadastrar no Banco</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5b: Adicionar Tema PS (Diretor / Admin) -->
+    <div id="modal-add-ps" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+            <button onclick="closeModal('modal-add-ps')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold font-display text-fox-400">Cadastrar Novo Tema de PS</h3>
+            <form onsubmit="handleAddPSSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tema do Discurso</label>
+                    <input type="text" id="new-ps-tema" required placeholder="Ex: O impacto da inteligência artificial na sociedade..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Tipo de Discurso</label>
+                    <select id="new-ps-tipo" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                        <option value="Direto">Discurso Direto</option>
+                        <option value="Referenciado">Discurso Referenciado</option>
+                        <option value="Cenário">Análise de Cenário</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Campeonato / Evento</label>
+                    <input type="text" id="new-ps-camp" required placeholder="Ex: Torneio Interno 2026" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Cadastrar no Banco de PS</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: Recomendação Diretor -> Member (WhatsApp / Sistema) -->
+    <div id="modal-vincular-formacao" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+            <button onclick="closeModal('modal-vincular-formacao')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold font-display text-fox-400">Recomendar Formação Direta</h3>
+            <p class="text-xs text-slate-400">A indicação será exibida diretamente no perfil do aluno na plataforma.</p>
+            <form onsubmit="handleVincularFormacaoSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Selecione a Formação</label>
+                    <select id="select-vincular-item" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                        <option value="1">Técnicas Avançadas de Extension na CG</option>
+                        <option value="2">Framing e Enquadramento de Impactos</option>
+                        <option value="3">Modulação Vocal para Public Speaking</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Nota do Diretor para a Raposinha</label>
+                    <textarea rows="2" placeholder="Ex: Percebi que você precisa ajustar o enquadramento no 2º discurso..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Atribuir Recomendações</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 7: Editar Perfil -->
+    <div id="modal-edit-perfil" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+            <button onclick="closeModal('modal-edit-perfil')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-xl font-bold font-display text-fox-400">Alterar Dados Cadastrais</h3>
+            <form onsubmit="handleEditPerfilSubmit(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Nome Completo</label>
+                    <input type="text" id="edit-nome" value="Clara Raposa" required class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-300 mb-1">E-mail de Acesso</label>
+                    <input type="email" id="edit-email" value="clara.raposa@sdp.org.br" required class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
+                </div>
+                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Atualizar Cadastro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-fox-dark border-t border-fox-900 py-8 mt-12 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl">🦊</span>
+                <span class="font-bold text-slate-300">Sociedade de Debates Potiguar (SDP)</span>
+                <span>• © 2026 Todos os direitos reservados.</span>
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" class="hover:text-fox-400 transition">Contato</a>
+                <a href="#" class="hover:text-fox-400 transition">Termos</a>
+                <a href="#" class="hover:text-fox-400 transition">Instagram @sdp_raposa</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State Engine
+        let currentUserRole = 'raposinha'; // raposinha | diretor | admin
+        let isLoggedIn = false;
+        let currentContext = 'public'; // public | internal
+        let currentCapacitacaoTab = 'bp';
+        let chartBPInstance = null;
+        let chartPSInstance = null;
+
+        // Mock Database
+        const dbMocoes = [
+            { id: 1, titulo: "Esta Casa Lamenta a narrativa de que o sucesso acadêmico é a única via de ascensão social.", infoslide: "O debate considera a valorização social de carreiras não acadêmicas.", tipo: ["Esta Casa Lamenta"], eixo: ["Filosofia", "Direitos Humanos"], camp: "Brasileirão 2025" },
+            { id: 2, titulo: "Esta Casa Prefere a regulamentação estatal estrita da Inteligência Artificial à autorregulamentação corporativa.", infoslide: "Considere impactos em empregos e monopólios de tecnologia.", tipo: ["Esta Casa Prefere"], eixo: ["Economia", "Política"], camp: "Torneio da Toca" },
+            { id: 3, titulo: "Esta Casa Apoia o voto compulsório em democracias em desenvolvimento.", infoslide: "Discuta legitimidade eleitoral e engajamento das minorias.", tipo: ["Esta Casa Apoia"], eixo: ["Política", "Direitos Humanos"], camp: "Open Latino-Americano" }
+        ];
+
+        const dbPS = [
+            { id: 1, tema: "O impacto da empatia no liderar contemporâneo", tipo: "Direto", camp: "PS Master Class" },
+            { id: 2, tema: "Análise crítica do discurso político em tempos de polarização", tipo: "Referenciado", camp: "Torneio da Toca" },
+            { id: 3, tema: "A solidão das redes sociais versus conexão real", tipo: "Cenário", camp: "Circuito Universitário" }
+        ];
+
+        const dbFormacoes = [
+            { id: 1, titulo: "Mecanização de Argumentos em Abertura (OG/OO)", tipo: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", cat: "bp", desc: "Como gerar 3 níveis de análise profunda em 15 min de prep." },
+            { id: 2, titulo: "Extensão de Impactos e Framing em Fechamento", tipo: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", cat: "bp", desc: "Técnicas para vencer a própria abertura com métricas novas." },
+            { id: 3, titulo: "Manual de Regras BP & Adjudicação 2026.pdf", tipo: "pdf", url: "#", cat: "bp", desc: "Guia completo em PDF elaborado pela Diretoria SDP." },
+            { id: 4, titulo: "Linguagem Corporal e Expressividade no Palco", tipo: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", cat: "ps", desc: "Apostila prática de modulação e postura." }
+        ];
+
+        const dbRaposinhas = [
+            { id: 101, nome: "Clara Raposa", email: "clara.raposa@sdp.org.br", treinos: 14, mediaSpeaker: 76.4, status: "Ativo" },
+            { id: 102, nome: "Marcos Vinicius", email: "marcos.v@sdp.org.br", treinos: 9, mediaSpeaker: 74.2, status: "Atenção" },
+            { id: 103, nome: "Beatriz Lima", email: "beatriz@sdp.org.br", treinos: 21, mediaSpeaker: 78.1, status: "Destaque" }
+        ];
+
+        window.onload = function() {
+            updateAuthUI();
+            navigateTo('home');
+            renderFormacoes();
+            renderMocoesTable();
+            renderPSTable();
+            renderAcompanhamentoTable();
+            initCharts();
+        };
+
+        function updateAuthUI() {
+            const userMenu = document.getElementById('user-profile-menu');
+            const loginBtn = document.getElementById('btn-login-trigger');
+
+            if (isLoggedIn) {
+                loginBtn.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                userMenu.classList.add('flex');
+            } else {
+                loginBtn.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                userMenu.classList.remove('flex');
+            }
+            
+            if (!isLoggedIn && currentContext === 'internal') {
+                navigateTo('home');
+            } else {
+                switchRole(currentUserRole); 
+            }
+        }
+
+        function updateNavbarContext(pageId) {
+            const publicPages = ['home', 'sobre', 'rastros'];
+            if (publicPages.includes(pageId)) {
+                currentContext = 'public';
+            } else {
+                currentContext = 'internal';
+            }
+
+            if (currentContext === 'public') {
+                document.querySelectorAll('.nav-context-public').forEach(el => el.classList.remove('hidden'));
+                document.querySelectorAll('.nav-context-internal').forEach(el => el.classList.add('hidden'));
+                document.getElementById('nav-diretor').classList.add('hidden');
+                if(document.getElementById('mobile-nav-diretor')) document.getElementById('mobile-nav-diretor').classList.add('hidden');
+            } else {
+                document.querySelectorAll('.nav-context-public').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.nav-context-internal').forEach(el => el.classList.remove('hidden'));
+                
+                const isGestao = (currentUserRole === 'diretor' || currentUserRole === 'admin');
+                if (isGestao) {
+                    document.getElementById('nav-diretor').classList.remove('hidden');
+                    if(document.getElementById('mobile-nav-diretor')) document.getElementById('mobile-nav-diretor').classList.remove('hidden');
+                } else {
+                    document.getElementById('nav-diretor').classList.add('hidden');
+                    if(document.getElementById('mobile-nav-diretor')) document.getElementById('mobile-nav-diretor').classList.add('hidden');
+                }
+            }
+        }
+
+        // Navigation Controller
+        function navigateTo(pageId) {
+            const protectedRoutes = ['mirante', 'formacoes', 'mocoes', 'ps', 'acompanhamento', 'perfil'];
+            if (protectedRoutes.includes(pageId) && !isLoggedIn) {
+                openModal('modal-login');
+                return;
+            }
+
+            // Proteção extra de rota para garantir que "Pasta de Debates" não entre no Acompanhamento
+            if (pageId === 'acompanhamento' && currentUserRole !== 'diretor' && currentUserRole !== 'admin') {
+                alert('Acesso negado: Apenas Diretores e Administradores podem visualizar o painel de acompanhamento de membros.');
+                return;
+            }
+
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            
+            // Show target page
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            updateNavbarContext(pageId);
+
+            // Update Header Nav Active state (Destacando cor e ícone em laranja)
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-page') === pageId || (pageId === 'mirante' && btn.getAttribute('data-page') === 'mirante-bridge')) {
+                    btn.classList.add('text-fox-400', 'font-bold', 'bg-fox-500/10');
+                    btn.classList.remove('text-slate-300');
+                } else {
+                    btn.classList.remove('text-fox-400', 'font-bold', 'bg-fox-500/10');
+                    btn.classList.add('text-slate-300');
+                }
+            });
+
+            // Re-render charts if navigating to profile
+            if (pageId === 'perfil') {
+                setTimeout(initCharts, 100);
+            }
+        }
+
+        // Role Switcher Simulation
+        function switchRole(role) {
+            currentUserRole = role;
+            const badge = document.getElementById('user-badge');
+            const btnAddFormacao = document.getElementById('btn-add-formacao');
+            const btnAddMocao = document.getElementById('btn-add-mocao');
+            const btnAddPS = document.getElementById('btn-add-ps');
+
+            const isGestao = (role === 'diretor' || role === 'admin');
+            const isPasta = (role === 'pasta');
+
+            if (role === 'raposinha') {
+                badge.innerText = "Membro";
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-fox-500/20 text-fox-300 border border-fox-500/40";
+            } else if (role === 'pasta') {
+                badge.innerText = "Pasta de Debates";
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40";
+            } else if (role === 'diretor') {
+                badge.innerText = "Diretor";
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40";
+            } else if (role === 'admin') {
+                badge.innerText = "Admin (Acesso Total)";
+                badge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40";
+            }
+
+            // Acesso aos Bancos: Permitido para Pasta de Debates E Diretoria
+            if (isLoggedIn && (isGestao || isPasta)) {
+                if(btnAddMocao) btnAddMocao.classList.remove('hidden');
+                if(btnAddPS) btnAddPS.classList.remove('hidden');
+            } else {
+                if(btnAddMocao) btnAddMocao.classList.add('hidden');
+                if(btnAddPS) btnAddPS.classList.add('hidden');
+            }
+            
+            // Acesso para Adicionar Formações: Restrito à Diretoria
+            if (isLoggedIn && isGestao) {
+                if(btnAddFormacao) btnAddFormacao.classList.remove('hidden');
+            } else {
+                if(btnAddFormacao) btnAddFormacao.classList.add('hidden');
+            }
+            
+            // Re-avalia a navbar contextualmente (útil para mostrar/esconder Acompanhamento Diretor)
+            const activePageContent = document.querySelector('.page-content:not(.hidden)');
+            if (activePageContent) {
+                const currentPage = activePageContent.id.replace('page-', '');
+                updateNavbarContext(currentPage);
+            }
+        }
+
+        // Formações Tab Renderer
+        function switchCapacitacaoTab(tab) {
+            currentCapacitacaoTab = tab;
+            document.getElementById('tab-cap-bp').className = tab === 'bp' ? 'pb-3 px-2 font-bold active-tab' : 'pb-3 px-2 font-bold text-slate-400 hover:text-slate-200';
+            document.getElementById('tab-cap-ps').className = tab === 'ps' ? 'pb-3 px-2 font-bold active-tab' : 'pb-3 px-2 font-bold text-slate-400 hover:text-slate-200';
+            renderFormacoes();
+        }
+
+        function renderFormacoes() {
+            const search = document.getElementById('formacao-search').value.toLowerCase();
+            const gridVideos = document.getElementById('grid-videos-formacao');
+            const gridPdfs = document.getElementById('grid-pdfs-formacao');
+
+            gridVideos.innerHTML = '';
+            gridPdfs.innerHTML = '';
+
+            const filtered = dbFormacoes.filter(f => f.cat === currentCapacitacaoTab && f.titulo.toLowerCase().includes(search));
+
+            filtered.forEach(f => {
+                if (f.tipo === 'video') {
+                    gridVideos.innerHTML += `
+                        <div class="fox-card rounded-2xl overflow-hidden border border-fox-500/20">
+                            <div class="aspect-video bg-black">
+                                <iframe class="w-full h-full" src="${f.url}" title="Aula" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <h4 class="font-bold text-white text-sm">${f.titulo}</h4>
+                                <p class="text-xs text-slate-400">${f.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    gridPdfs.innerHTML += `
+                        <div class="fox-card p-4 rounded-xl border border-fox-500/20 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-2 rounded-lg bg-rose-500/20 text-rose-400 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-xs text-white">${f.titulo}</h4>
+                                    <p class="text-[10px] text-slate-400">${f.desc}</p>
+                                </div>
+                            </div>
+                            <a href="${f.url}" onclick="alert('Download do documento PDF simulado!')" class="p-2 text-fox-400 hover:text-fox-300"><i class="fa-solid fa-download"></i></a>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Moções Table Renderer
+        function renderMocoesTable() {
+            const tbody = document.getElementById('tbody-mocoes');
+            const search = document.getElementById('filter-mocao-search').value.toLowerCase();
+            const tipo = document.getElementById('filter-mocao-tipo').value;
+            const eixo = document.getElementById('filter-mocao-eixo').value;
+
+            tbody.innerHTML = '';
+
+            dbMocoes.forEach(m => {
+                // Checa se o filtro bate com algum dos arrays
+                const matchTipo = tipo === 'all' || (Array.isArray(m.tipo) ? m.tipo.includes(tipo) : m.tipo === tipo);
+                const matchEixo = eixo === 'all' || (Array.isArray(m.eixo) ? m.eixo.includes(eixo) : m.eixo === eixo);
+
+                if (
+                    (m.titulo.toLowerCase().includes(search) || m.infoslide.toLowerCase().includes(search)) &&
+                    matchTipo &&
+                    matchEixo
+                ) {
+                    const strTipos = Array.isArray(m.tipo) ? m.tipo.join(', ') : m.tipo;
+                    const strEixos = Array.isArray(m.eixo) ? m.eixo.join(', ') : m.eixo;
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-fox-900/40 transition">
+                            <td class="p-4 font-semibold text-white max-w-xs">${m.titulo}</td>
+                            <td class="p-4 text-xs text-slate-400 max-w-xs">${m.infoslide || 'Sem infoslide.'}</td>
+                            <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-fox-500/10 text-fox-400 border border-fox-500/20 leading-relaxed block">${strTipos} <br> ${strEixos}</span></td>
+                            <td class="p-4 text-xs text-slate-300">${m.camp}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="openAvaliarMocaoModal('${m.titulo}')" class="px-3 py-1.5 rounded-lg fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                                    <i class="fa-solid fa-star mr-1"></i> Avaliar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        // PS Table Renderer
+        function renderPSTable() {
+            const tbody = document.getElementById('tbody-ps');
+            const search = document.getElementById('filter-ps-search').value.toLowerCase();
+            const tipo = document.getElementById('filter-ps-tipo').value;
+
+            tbody.innerHTML = '';
+
+            dbPS.forEach(p => {
+                if (p.tema.toLowerCase().includes(search) && (tipo === 'all' || p.tipo === tipo)) {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-fox-900/40 transition">
+                            <td class="p-4 font-semibold text-white">${p.tema}</td>
+                            <td class="p-4"><span class="px-2 py-1 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">${p.tipo}</span></td>
+                            <td class="p-4 text-xs text-slate-300">${p.camp}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="openAvaliarPSModal('${p.tema}')" class="px-3 py-1.5 rounded-lg fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
+                                    <i class="fa-solid fa-microphone mr-1"></i> Avaliar Tema
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        // Diretor Acompanhamento Table Renderer
+        function renderAcompanhamentoTable() {
+            const tbody = document.getElementById('tbody-acompanhamento');
+            tbody.innerHTML = '';
+
+            dbRaposinhas.forEach(r => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-fox-900/40 transition">
+                        <td class="p-4 flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-fox-500/20 text-fox-400 flex items-center justify-center font-bold text-xs">${r.nome.charAt(0)}</div>
+                            <div>
+                                <p class="font-bold text-white text-xs">${r.nome}</p>
+                                <p class="text-[10px] text-slate-400">${r.email}</p>
+                            </div>
+                        </td>
+                        <td class="p-4 text-xs text-slate-300">${r.treinos} rodadas</td>
+                        <td class="p-4"><strong class="text-fox-400 text-xs">${r.mediaSpeaker} pts</strong></td>
+                        <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">${r.status}</span></td>
+                        <td class="p-4 text-center space-x-2">
+                            <button onclick="viewMemberProfile('${r.nome}', '${r.email}')" class="px-2.5 py-1 rounded bg-fox-800 hover:bg-fox-700 text-xs text-slate-200">
+                                <i class="fa-solid fa-chart-line mr-1"></i> Ver Estatísticas
+                            </button>
+                            <button onclick="sendWhatsAppIndication('${r.nome}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-bold">
+                                <i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp
+                            </button>
+                            <button onclick="openModal('modal-vincular-formacao')" class="px-2.5 py-1 rounded bg-fox-500/20 hover:bg-fox-500/30 text-fox-400 border border-fox-500/30 text-xs font-bold">
+                                <i class="fa-solid fa-link mr-1"></i> Vincular Formação
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function viewMyProfile() {
+            document.getElementById('perfil-nome').innerText = document.getElementById('nav-user-name').innerText;
+            document.getElementById('perfil-email').innerText = "clara.raposa@sdp.org.br";
+            document.getElementById('perfil-avatar').src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80";
+            document.getElementById('btn-back-acompanhamento').classList.add('hidden');
+            navigateTo('perfil');
+        }
+
+        function viewMemberProfile(nome, email) {
+            document.getElementById('perfil-nome').innerText = nome;
+            document.getElementById('perfil-email').innerText = email;
+            // Gera um avatar temporário com as iniciais para diferenciar
+            document.getElementById('perfil-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=ff6b00&color=fff&size=120`;
+            document.getElementById('btn-back-acompanhamento').classList.remove('hidden');
+            navigateTo('perfil');
+        }
+
+        // Chart.js Initialization
+        function initCharts() {
+            // BP Line Chart
+            const ctxBP = document.getElementById('chart-bp');
+            if (ctxBP) {
+                if (chartBPInstance) chartBPInstance.destroy();
+                chartBPInstance = new Chart(ctxBP, {
+                    type: 'line',
+                    data: {
+                        labels: ['Treino 1', 'Treino 2', 'Treino 3', 'Torneio A', 'Treino 4', 'Treino 5'],
+                        datasets: [{
+                            label: 'Speaker Points',
+                            data: [74.0, 75.2, 74.8, 77.0, 76.5, 78.0],
+                            borderColor: '#ff6b00',
+                            backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { min: 70, max: 82, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
+            }
+
+            // PS Radar Chart
+            const ctxPS = document.getElementById('chart-ps');
+            if (ctxPS) {
+                if (chartPSInstance) chartPSInstance.destroy();
+                chartPSInstance = new Chart(ctxPS, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Linguagem Não-Verbal', 'Voz e Fala', 'Estrutura', 'Engajamento', 'Conteúdo'],
+                        datasets: [{
+                            label: 'Média de Notas (1-15)',
+                            data: [13, 12, 11, 14, 12],
+                            borderColor: '#e65100',
+                            backgroundColor: 'rgba(230, 81, 0, 0.2)',
+                            pointBackgroundColor: '#ff6b00'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            r: {
+                                min: 0,
+                                max: 15,
+                                grid: { color: 'rgba(255,255,255,0.1)' },
+                                pointLabels: { color: '#f8fafc', font: { size: 10 } },
+                                ticks: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Modal Handlers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function openAvaliarMocaoModal(titulo) {
+            document.getElementById('eval-mocao-title').innerText = titulo;
+            openModal('modal-avaliar-mocao');
+        }
+
+        function openAvaliarPSModal(tema) {
+            document.getElementById('eval-ps-title').innerText = tema;
+            openModal('modal-avaliar-ps');
+        }
+
+        function calculatePSTotal() {
+            const inputs = document.querySelectorAll('.ps-score');
+            let total = 0;
+            inputs.forEach(inp => total += parseInt(inp.value || 0));
+            document.getElementById('ps-total-display').innerText = `${total} / 75`;
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            isLoggedIn = true;
+            updateAuthUI();
+            closeModal('modal-login');
+            navigateTo('mirante');
+        }
+
+        function logoutUser() {
+            isLoggedIn = false;
+            updateAuthUI();
+            navigateTo('home');
+        }
+
+        function handleMocaoEvaluationSubmit(e) {
+            e.preventDefault();
+            alert('Avaliação de Moção registrada com sucesso no seu perfil do Mirante!');
+            closeModal('modal-avaliar-mocao');
+        }
+
+        function handlePSEvaluationSubmit(e) {
+            e.preventDefault();
+            alert('Avaliação de PS cadastrada! Seu gráfico de radar foi atualizado.');
+            closeModal('modal-avaliar-ps');
+        }
+
+        function handleAddFormacaoSubmit(e) {
+            e.preventDefault();
+            const titulo = document.getElementById('new-formacao-title').value;
+            const cat = document.getElementById('new-formacao-cat').value;
+            const type = document.getElementById('new-formacao-type').value;
+            const url = document.getElementById('new-formacao-url').value;
+
+            dbFormacoes.push({
+                id: Date.now(),
+                titulo,
+                cat,
+                tipo: type,
+                url,
+                desc: 'Conteúdo cadastrado recentemente pela Diretoria.'
+            });
+
+            renderFormacoes();
+            closeModal('modal-add-formacao');
+            alert('Nova formação publicada no catálogo do site!');
+        }
+
+        function handleAddMocaoSubmit(e) {
+            e.preventDefault();
+            const titulo = document.getElementById('new-mocao-title').value;
+            const infoslide = document.getElementById('new-mocao-infoslide').value;
+            const camp = document.getElementById('new-mocao-camp').value;
+
+            // Extrair os checkboxes marcados
+            const tiposSelecionados = Array.from(document.querySelectorAll('#new-mocao-tipo-container input[type="checkbox"]:checked')).map(cb => cb.value);
+            const eixosSelecionados = Array.from(document.querySelectorAll('#new-mocao-eixo-container input[type="checkbox"]:checked')).map(cb => cb.value);
+
+            if (tiposSelecionados.length === 0) {
+                alert('Por favor, selecione pelo menos um Tipo de Moção.');
+                return;
+            }
+
+            if (eixosSelecionados.length === 0) {
+                alert('Por favor, selecione pelo menos um Eixo Temático.');
+                return;
+            }
+
+            dbMocoes.unshift({ 
+                id: Date.now(), 
+                titulo, 
+                infoslide, 
+                tipo: tiposSelecionados, 
+                eixo: eixosSelecionados, 
+                camp 
+            });
+            
+            renderMocoesTable();
+            closeModal('modal-add-mocao');
+            
+            // Limpar formulário (desmarcar checkboxes e resetar textos)
+            document.getElementById('new-mocao-title').value = '';
+            document.getElementById('new-mocao-infoslide').value = '';
+            document.getElementById('new-mocao-camp').value = '';
+            document.querySelectorAll('#new-mocao-tipo-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('#new-mocao-eixo-container input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+            alert('Moção cadastrada no Banco com sucesso!');
+        }
+
+        function handleAddPSSubmit(e) {
+            e.preventDefault();
+            const tema = document.getElementById('new-ps-tema').value;
+            const tipo = document.getElementById('new-ps-tipo').value;
+            const camp = document.getElementById('new-ps-camp').value;
+
+            dbPS.unshift({
+                id: Date.now(),
+                tema,
+                tipo,
+                camp
+            });
+
+            renderPSTable();
+            closeModal('modal-add-ps');
+
+            // Limpar formulário
+            document.getElementById('new-ps-tema').value = '';
+            document.getElementById('new-ps-tipo').value = 'Direto';
+            document.getElementById('new-ps-camp').value = '';
+
+            alert('Tema de PS cadastrado no Banco com sucesso!');
+        }
+
+        function handleVincularFormacaoSubmit(e) {
+            e.preventDefault();
+            closeModal('modal-vincular-formacao');
+            alert('Formação recomendada vinculada ao perfil da Raposinha!');
+        }
+
+        function handleEditPerfilSubmit(e) {
+            e.preventDefault();
+            const nome = document.getElementById('edit-nome').value;
+            const email = document.getElementById('edit-email').value;
+
+            document.getElementById('perfil-nome').innerText = nome;
+            document.getElementById('perfil-email').innerText = email;
+            document.getElementById('nav-user-name').innerText = nome;
+            document.getElementById('mirante-user-display').innerText = nome;
+
+            closeModal('modal-edit-perfil');
+            alert('Dados cadastrais atualizados!');
+        }
+
+        function sendWhatsAppIndication(nome) {
+            const msg = encodeURIComponent(`Olá ${nome}! Analisei seus gráficos no Mirante da Raposa e recomendo que assista à formação de Framing na plataforma SDP.`);
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+        }
+
+        function filterRastros(cat) {
+            document.querySelectorAll('.rastro-filter-btn').forEach(btn => btn.classList.remove('active-tab'));
+            event.target.classList.add('active-tab');
+
+            document.querySelectorAll('.rastro-item').forEach(item => {
+                if (cat === 'all' || item.getAttribute('data-cat') === cat) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
