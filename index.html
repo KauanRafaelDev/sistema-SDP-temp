@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDP - Sociedade de Debates Potiguar | O Mirante da Raposa</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -89,7 +85,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between bg-fox-dark text-slate-100">
 
-    <!-- Top Role Simulator Bar -->
     <div id="role-bar" class="bg-gradient-to-r from-fox-900 via-fox-800 to-fox-900 border-b border-fox-500/30 text-xs py-2 px-4 flex flex-wrap justify-between items-center z-50 sticky top-0">
         <div class="flex items-center space-x-2">
             <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -107,7 +102,6 @@
         </div>
     </div>
 
-    <!-- Main Navigation Header -->
     <header class="bg-fox-900/90 border-b border-fox-800 sticky top-[33px] z-40 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
             <!-- Logo -->
@@ -181,7 +175,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- ================= PAGE 1: HOME (LANDING PAGE) ================= -->
+        <!-- ================= PAGE 1: HOME ================= -->
         <section id="page-home" class="page-content space-y-16">
             <div class="relative rounded-3xl overflow-hidden fox-card p-8 md:p-16 border border-fox-500/30 shadow-2xl flex flex-col md:flex-row items-center justify-between">
                 <div class="absolute -top-24 -left-24 w-72 h-72 bg-fox-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -287,7 +281,7 @@
                     <h1 class="text-3xl font-bold font-display flex items-center gap-2">
                         <span>🐾</span> Nossos Rastros <span class="text-xs px-2 py-1 rounded-full bg-fox-500/20 text-fox-400 border border-fox-500/30">Histórico</span>
                     </h1>
-                    <p class="text-slate-400 text-sm">Histórico público de conquistas, campeonatos e marcos da Sociedade de Debates Potiguar. Clique em qualquer card para ver mais detalhes.</p>
+                    <p class="text-slate-400 text-sm">Histórico público de conquistas, campeonatos e marcos da Sociedade de Debates Potiguar. Clique em qualquer card para ver detalhes.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
                     <button id="btn-add-rastro" onclick="openModal('modal-add-rastro')" class="hidden px-3 py-1.5 rounded-lg fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
@@ -382,7 +376,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
                 <div>
                     <h1 class="text-3xl font-bold font-display">Módulo de Capacitação</h1>
-                    <p class="text-slate-400 text-sm">Aulas em vídeo, materiais teóricos e guias em PDF.</p>
+                    <p class="text-slate-400 text-sm">Aulas em vídeo, materiais teóricos e guias em PDF. Marque as formações que você já assistiu ou leu.</p>
                 </div>
                 <button id="btn-add-formacao" onclick="openModal('modal-add-formacao')" class="hidden px-4 py-2 rounded-xl fox-gradient text-white text-xs font-bold shadow hover:opacity-90">
                     <i class="fa-solid fa-plus-circle mr-1"></i> Adicionar Formação / Documento
@@ -523,9 +517,27 @@
                         </div>
                     </div>
                 </div>
-                <button onclick="openModal('modal-edit-perfil')" class="px-4 py-2 rounded-xl bg-fox-800 hover:bg-fox-700 text-slate-200 text-xs font-bold border border-fox-700 transition">
-                    <i class="fa-solid fa-user-gear mr-1"></i> Alterar Dados Cadastrais
+                <!-- Botão de alterar dados credenciais e senha (visível apenas no próprio perfil) -->
+                <button id="btn-edit-perfil-trigger" onclick="openModal('modal-edit-perfil')" class="px-4 py-2 rounded-xl bg-fox-800 hover:bg-fox-700 text-slate-200 text-xs font-bold border border-fox-700 transition">
+                    <i class="fa-solid fa-user-gear mr-1"></i> Alterar Dados Cadastrais & Senha
                 </button>
+            </div>
+
+            <!-- Formações Recomendadas pela Diretoria -->
+            <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-4">
+                <div class="flex justify-between items-center border-b border-fox-800 pb-3">
+                    <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-fox-500"></i> Formações Recomendadas pela Diretoria
+                    </h3>
+                    <div class="flex items-center space-x-3">
+                        <button id="btn-add-rec-from-profile" onclick="openVincularFormacaoModal(currentViewingMember ? currentViewingMember.nome : 'Clara Raposa')" class="hidden px-3 py-1.5 rounded-lg fox-gradient text-white text-xs font-bold shadow hover:opacity-90 transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Sugerir Formação
+                        </button>
+                        <span class="text-xs text-slate-400">Sugestões personalizadas</span>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400">Conteúdos sugeridos pelos diretores para o seu aprimoramento em debate e oratória.</p>
+                <div id="user-recommendations-list" class="space-y-3"></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -535,16 +547,21 @@
                         <span class="text-xs text-slate-400">Evolução em Treinos</span>
                     </div>
                     <div class="relative h-64"><canvas id="chart-bp"></canvas></div>
-                    <p class="text-xs text-slate-400 text-center">Média recente de Speaker Points por rodada praticada.</p>
                 </div>
-
                 <div class="fox-card p-6 rounded-2xl border border-fox-500/20 space-y-4">
-                    <div class="flex justify-between items-center border-b border-fox-800 pb-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-fox-800 pb-3 gap-2">
                         <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-chart-radar text-fox-500"></i> Competências de Oratória (PS)</h3>
-                        <span class="text-xs text-slate-400">Escala de 1 a 15</span>
+                        <div class="flex items-center space-x-2">
+                            <label class="text-[11px] text-slate-400">Tipo:</label>
+                            <select id="ps-chart-filter" onchange="filterPSChart(this.value)" class="bg-fox-900 border border-fox-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-fox-500">
+                                <option value="all">Todos</option>
+                                <option value="Direto">Direto</option>
+                                <option value="Referenciado">Referenciado</option>
+                                <option value="Cenário">Cenário</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="relative h-64"><canvas id="chart-ps"></canvas></div>
-                    <p class="text-xs text-slate-400 text-center">Avaliadas em Não-Verbal, Voz, Estrutura, Engajamento e Conteúdo.</p>
                 </div>
             </div>
         </section>
@@ -554,7 +571,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-fox-800 pb-4">
                 <div>
                     <h1 class="text-3xl font-bold font-display text-fox-400 flex items-center gap-2"><i class="fa-solid fa-users-gear"></i> Painel de Acompanhamento de Raposinhas</h1>
-                    <p class="text-slate-400 text-sm">Visão exclusiva de Diretores/Admins para monitorar o desenvolvimento do plantel de debatedores.</p>
+                    <p class="text-slate-400 text-sm">Visão exclusiva de Diretores/Admins para monitorar o desenvolvimento, verificar o progresso de formações e sugerir conteúdos.</p>
                 </div>
             </div>
 
@@ -565,7 +582,7 @@
                             <th class="p-4">Raposinha (Membro)</th>
                             <th class="p-4">Debates Avaliados</th>
                             <th class="p-4">Média Speaker Points</th>
-                            <th class="p-4">Status de Treino</th>
+                            <th class="p-4">Formações Vistas</th>
                             <th class="p-4 text-center">Ações de Gestão</th>
                         </tr>
                     </thead>
@@ -690,7 +707,7 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Speaker Points *</label>
+                    <label class="block font-semibold text-slate-300 mb-1">Speaker Points * (Número inteiro sem vírgula)</label>
                     <input type="number" step="1" min="50" max="100" required placeholder="Ex: 76" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500">
                 </div>
 
@@ -892,26 +909,50 @@
         </div>
     </div>
 
-    <!-- Modal 6: Recomendação Diretor -> Member -->
+    <!-- Modal 6: Recomendação Escalável com Filtros Múltiplos Simultâneos -->
     <div id="modal-vincular-formacao" onclick="if(event.target === this) closeModal('modal-vincular-formacao')" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
+        <div class="fox-card w-full max-w-lg p-6 rounded-2xl border border-fox-500/30 space-y-4 relative max-h-[90vh] flex flex-col">
             <button onclick="closeModal('modal-vincular-formacao')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-bold font-display text-fox-400">Recomendar Formação Direta</h3>
-            <p class="text-xs text-slate-400">A indicação será exibida diretamente no perfil do aluno na plataforma.</p>
-            <form onsubmit="handleVincularFormacaoSubmit(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Selecione a Formação</label>
-                    <select id="select-vincular-item" class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200">
-                        <option value="1">Técnicas Avançadas de Extension na CG</option>
-                        <option value="2">Framing e Enquadramento de Impactos</option>
-                        <option value="3">Modulação Vocal para Public Speaking</option>
-                    </select>
+            <div>
+                <h3 class="text-xl font-bold font-display text-fox-400">Recomendar Formação</h3>
+                <p id="vincular-modal-subtitle" class="text-xs text-slate-400 mt-0.5">Busque, selecione múltiplos filtros e escolha o conteúdo:</p>
+            </div>
+            
+            <form onsubmit="handleVincularFormacaoSubmit(event)" class="space-y-3 text-xs flex-grow flex flex-col overflow-hidden">
+                <div class="space-y-2">
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-slate-500 text-xs"></i>
+                        <input type="text" id="rec-search-input" oninput="renderRecommendationModalList()" placeholder="Buscar por título ou palavras..." class="w-full bg-fox-900 border border-fox-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-fox-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Filtros Múltiplos Simultâneos:</label>
+                        <div class="flex flex-wrap gap-1.5" id="rec-filters-container">
+                            <label class="px-2.5 py-1 rounded-md bg-fox-900 border border-fox-800 text-[11px] cursor-pointer hover:border-fox-500/50 flex items-center space-x-1.5 select-none text-slate-300">
+                                <input type="checkbox" value="video" onchange="renderRecommendationModalList()" class="rec-filter-cb accent-fox-500"> <span>Vídeos</span>
+                            </label>
+                            <label class="px-2.5 py-1 rounded-md bg-fox-900 border border-fox-800 text-[11px] cursor-pointer hover:border-fox-500/50 flex items-center space-x-1.5 select-none text-slate-300">
+                                <input type="checkbox" value="pdf" onchange="renderRecommendationModalList()" class="rec-filter-cb accent-fox-500"> <span>PDFs / Arquivos</span>
+                            </label>
+                            <label class="px-2.5 py-1 rounded-md bg-fox-900 border border-fox-800 text-[11px] cursor-pointer hover:border-fox-500/50 flex items-center space-x-1.5 select-none text-slate-300">
+                                <input type="checkbox" value="bp" onchange="renderRecommendationModalList()" class="rec-filter-cb accent-fox-500"> <span>BP (Debate)</span>
+                            </label>
+                            <label class="px-2.5 py-1 rounded-md bg-fox-900 border border-fox-800 text-[11px] cursor-pointer hover:border-fox-500/50 flex items-center space-x-1.5 select-none text-slate-300">
+                                <input type="checkbox" value="ps" onchange="renderRecommendationModalList()" class="rec-filter-cb accent-fox-500"> <span>PS (Public Speaking)</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
+
+                <div id="rec-formacao-list-container" class="space-y-2 overflow-y-auto max-h-48 bg-fox-900/60 p-2 rounded-xl border border-fox-800 flex-grow"></div>
+
+                <input type="hidden" id="selected-rec-formacao-id" required>
+
                 <div>
-                    <label class="block font-semibold text-slate-300 mb-1">Nota do Diretor para a Raposinha</label>
-                    <textarea rows="2" placeholder="Ex: Percebi que você precisa ajustar o enquadramento no 2º discurso..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200"></textarea>
+                    <label class="block font-semibold text-slate-300 mb-1">Nota do Diretor (Opcional)</label>
+                    <textarea rows="2" placeholder="Ex: Sugiro assistir para reforçar a técnica de Framing..." class="w-full bg-fox-900 border border-fox-800 rounded-lg p-2 text-slate-200 focus:border-fox-500"></textarea>
                 </div>
-                <button type="submit" class="w-full py-2 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Atribuir Recomendações</button>
+                <button type="submit" class="w-full py-2.5 rounded-xl fox-gradient text-white font-bold text-sm shadow hover:opacity-90">Enviar Recomendação (Permite Reenvio)</button>
             </form>
         </div>
     </div>
@@ -920,7 +961,7 @@
     <div id="modal-edit-perfil" onclick="if(event.target === this) closeModal('modal-edit-perfil')" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div class="fox-card w-full max-w-md p-6 rounded-2xl border border-fox-500/30 space-y-4 relative">
             <button onclick="closeModal('modal-edit-perfil')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-xl font-bold font-display text-fox-400">Alterar Dados Cadastrais</h3>
+            <h3 class="text-xl font-bold font-display text-fox-400">Alterar Dados Cadastrais & Senha</h3>
             <form onsubmit="handleEditPerfilSubmit(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold text-slate-300 mb-1">Nome Completo</label>
@@ -1052,7 +1093,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript Application Logic -->
     <script>
         let currentUserRole = 'raposinha';
         let isLoggedIn = false;
@@ -1060,6 +1100,11 @@
         let currentCapacitacaoTab = 'bp';
         let chartBPInstance = null;
         let chartPSInstance = null;
+
+        let userCompletedFormacoes = [1, 3];
+        let selectedMemberForRecommendation = null;
+        let selectedFormationIdForRec = null;
+        let currentViewingMember = null;
 
         const dbMocoes = [
             { id: 1, titulo: "Esta Casa Lamenta a narrativa de que o sucesso acadêmico é a única via de ascensão social.", infoslide: "O debate considera a valorização social de carreiras não acadêmicas.", tipo: ["Narrativa"], eixo: ["Filosofia e Moralidade", "Educação"], camp: "Brasileirão 2025" },
@@ -1081,9 +1126,11 @@
         ];
 
         const dbRaposinhas = [
-            { id: 101, nome: "Clara Raposa", email: "clara.raposa@sdp.org.br", treinos: 14, mediaSpeaker: 76.4, status: "Ativo" },
-            { id: 102, nome: "Marcos Vinicius", email: "marcos.v@sdp.org.br", treinos: 9, mediaSpeaker: 74.2, status: "Atenção" },
-            { id: 103, nome: "Beatriz Lima", email: "beatriz@sdp.org.br", treinos: 21, mediaSpeaker: 78.1, status: "Destaque" }
+            { id: 101, nome: "Clara Raposa", email: "clara.raposa@sdp.org.br", treinos: 14, mediaSpeaker: 76.4, status: "Ativo", completedFormacoes: [1, 3], recommendations: [
+                { id: 1, formacaoId: 2, titulo: "Extensão de Impactos e Framing em Fechamento", tipo: "video", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", note: "Percebi que você precisa ajustar o enquadramento no 2º discurso.", date: "Ontem" }
+            ] },
+            { id: 102, nome: "Marcos Vinicius", email: "marcos.v@sdp.org.br", treinos: 9, mediaSpeaker: 74.2, status: "Atenção", completedFormacoes: [1], recommendations: [] },
+            { id: 103, nome: "Beatriz Lima", email: "beatriz@sdp.org.br", treinos: 21, mediaSpeaker: 78.1, status: "Destaque", completedFormacoes: [1, 2, 3, 4], recommendations: [] }
         ];
 
         let dbRastros = [
@@ -1405,6 +1452,15 @@
             } else {
                 if(btnAddFormacao) btnAddFormacao.classList.add('hidden');
             }
+
+            const btnRecProfile = document.getElementById('btn-add-rec-from-profile');
+            if (btnRecProfile) {
+                if (isLoggedIn && isGestao && !document.getElementById('page-perfil').classList.contains('hidden')) {
+                    btnRecProfile.classList.remove('hidden');
+                } else {
+                    btnRecProfile.classList.add('hidden');
+                }
+            }
             
             const activePageContent = document.querySelector('.page-content:not(.hidden)');
             if (activePageContent) {
@@ -1420,6 +1476,22 @@
             renderFormacoes();
         }
 
+        function toggleFormacaoCompletion(formacaoId) {
+            const index = userCompletedFormacoes.indexOf(formacaoId);
+            if (index > -1) {
+                userCompletedFormacoes.splice(index, 1);
+                showNotification('Formação desmarcada como não concluída.');
+            } else {
+                userCompletedFormacoes.push(formacaoId);
+                showNotification('Parabéns! Formação marcada como concluída.');
+            }
+            const clara = dbRaposinhas.find(m => m.id === 101);
+            if (clara) clara.completedFormacoes = [...userCompletedFormacoes];
+
+            renderFormacoes();
+            renderAcompanhamentoTable();
+        }
+
         function renderFormacoes() {
             const search = document.getElementById('formacao-search').value.toLowerCase();
             const gridVideos = document.getElementById('grid-videos-formacao');
@@ -1431,29 +1503,44 @@
             const filtered = dbFormacoes.filter(f => f.cat === currentCapacitacaoTab && f.titulo.toLowerCase().includes(search));
 
             filtered.forEach(f => {
+                const isCompleted = userCompletedFormacoes.includes(f.id);
                 if (f.tipo === 'video') {
                     gridVideos.innerHTML += `
-                        <div class="fox-card rounded-2xl overflow-hidden border border-fox-500/20">
-                            <div class="aspect-video bg-black">
-                                <iframe class="w-full h-full" src="${f.url}" title="Aula" frameborder="0" allowfullscreen></iframe>
+                        <div class="fox-card rounded-2xl overflow-hidden border border-fox-500/20 flex flex-col justify-between">
+                            <div>
+                                <div class="aspect-video bg-black">
+                                    <iframe class="w-full h-full" src="${f.url}" title="Aula" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                                <div class="p-4 space-y-2">
+                                    <h4 class="font-bold text-white text-sm">${f.titulo}</h4>
+                                    <p class="text-xs text-slate-400">${f.desc}</p>
+                                </div>
                             </div>
-                            <div class="p-4 space-y-2">
-                                <h4 class="font-bold text-white text-sm">${f.titulo}</h4>
-                                <p class="text-xs text-slate-400">${f.desc}</p>
+                            <div class="p-4 pt-0">
+                                <button onclick="toggleFormacaoCompletion(${f.id})" class="w-full py-2 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-1.5 ${isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-fox-800 text-slate-300 hover:bg-fox-700 border border-fox-700'}">
+                                    ${isCompleted ? '<i class="fa-solid fa-check-circle text-emerald-400"></i> <span>Concluído (Assistido)</span>' : '<i class="fa-regular fa-circle"></i> <span>Marcar como Visto / Lido</span>'}
+                                </button>
                             </div>
                         </div>
                     `;
                 } else {
                     gridPdfs.innerHTML += `
-                        <div class="fox-card p-4 rounded-xl border border-fox-500/20 flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div class="p-2 rounded-lg bg-rose-500/20 text-rose-400 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
-                                <div>
-                                    <h4 class="font-bold text-xs text-white">${f.titulo}</h4>
-                                    <p class="text-[10px] text-slate-400">${f.desc}</p>
+                        <div class="fox-card p-4 rounded-xl border border-fox-500/20 flex flex-col justify-between space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="p-2 rounded-lg bg-rose-500/20 text-rose-400 text-lg"><i class="fa-solid fa-file-pdf"></i></div>
+                                    <div>
+                                        <h4 class="font-bold text-xs text-white">${f.titulo}</h4>
+                                        <p class="text-[10px] text-slate-400">${f.desc}</p>
+                                    </div>
                                 </div>
+                                <button onclick="showNotification('Download do documento PDF simulado!')" class="p-2 text-fox-400 hover:text-fox-300"><i class="fa-solid fa-download"></i></button>
                             </div>
-                            <button onclick="showNotification('Download do documento PDF simulado!')" class="p-2 text-fox-400 hover:text-fox-300"><i class="fa-solid fa-download"></i></button>
+                            <div>
+                                <button onclick="toggleFormacaoCompletion(${f.id})" class="w-full py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-1.5 ${isCompleted ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-fox-800 text-slate-300 hover:bg-fox-700 border border-fox-700'}">
+                                    ${isCompleted ? '<i class="fa-solid fa-check-circle text-emerald-400"></i> <span>Concluído (Lido)</span>' : '<i class="fa-regular fa-circle"></i> <span>Marcar como Lido</span>'}
+                                </button>
+                            </div>
                         </div>
                     `;
                 }
@@ -1528,6 +1615,7 @@
             tbody.innerHTML = '';
 
             dbRaposinhas.forEach(r => {
+                const completedCount = (r.completedFormacoes || []).length;
                 tbody.innerHTML += `
                     <tr class="hover:bg-fox-900/40 transition">
                         <td class="p-4 flex items-center space-x-3">
@@ -1539,16 +1627,20 @@
                         </td>
                         <td class="p-4 text-xs text-slate-300">${r.treinos} rodadas</td>
                         <td class="p-4"><strong class="text-fox-400 text-xs">${r.mediaSpeaker} pts</strong></td>
-                        <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">${r.status}</span></td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 rounded text-[11px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                                ${completedCount} / ${dbFormacoes.length} assistidas
+                            </span>
+                        </td>
                         <td class="p-4 text-center space-x-2">
                             <button onclick="viewMemberProfile('${r.nome}', '${r.email}')" class="px-2.5 py-1 rounded bg-fox-800 hover:bg-fox-700 text-xs text-slate-200">
-                                <i class="fa-solid fa-chart-line mr-1"></i> Ver Estatísticas
+                                <i class="fa-solid fa-chart-line mr-1"></i> Estatísticas
                             </button>
                             <button onclick="sendWhatsAppIndication('${r.nome}')" class="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-bold">
                                 <i class="fa-brands fa-whatsapp mr-1"></i> WhatsApp
                             </button>
-                            <button onclick="openModal('modal-vincular-formacao')" class="px-2.5 py-1 rounded bg-fox-500/20 hover:bg-fox-500/30 text-fox-400 border border-fox-500/30 text-xs font-bold">
-                                <i class="fa-solid fa-link mr-1"></i> Vincular Formação
+                            <button onclick="openVincularFormacaoModal('${r.nome}')" class="px-2.5 py-1 rounded bg-fox-500/20 hover:bg-fox-500/30 text-fox-400 border border-fox-500/30 text-xs font-bold">
+                                <i class="fa-solid fa-graduation-cap mr-1"></i> Sugerir Formação
                             </button>
                         </td>
                     </tr>
@@ -1556,20 +1648,170 @@
             });
         }
 
+        function openVincularFormacaoModal(memberName) {
+            selectedMemberForRecommendation = dbRaposinhas.find(m => m.nome === memberName) || dbRaposinhas[0];
+            document.getElementById('vincular-modal-subtitle').innerText = `Sugerir formação escalável para: ${selectedMemberForRecommendation.nome}`;
+            
+            document.getElementById('rec-search-input').value = '';
+            document.querySelectorAll('.rec-filter-cb').forEach(cb => cb.checked = false);
+            selectedFormationIdForRec = null;
+            document.getElementById('selected-rec-formacao-id').value = '';
+
+            renderRecommendationModalList();
+            openModal('modal-vincular-formacao');
+        }
+
+        function renderRecommendationModalList() {
+            const search = (document.getElementById('rec-search-input')?.value || '').toLowerCase();
+            const checkedCheckboxes = Array.from(document.querySelectorAll('.rec-filter-cb:checked')).map(cb => cb.value);
+            const container = document.getElementById('rec-formacao-list-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const completedList = selectedMemberForRecommendation ? (selectedMemberForRecommendation.completedFormacoes || []) : [];
+
+            const filtered = dbFormacoes.filter(f => {
+                const matchSearch = f.titulo.toLowerCase().includes(search) || f.desc.toLowerCase().includes(search);
+                
+                if (checkedCheckboxes.length === 0) return matchSearch;
+
+                const typeFilters = checkedCheckboxes.filter(v => v === 'video' || v === 'pdf');
+                const catFilters = checkedCheckboxes.filter(v => v === 'bp' || v === 'ps');
+
+                let matchType = typeFilters.length === 0 || typeFilters.includes(f.tipo);
+                let matchCat = catFilters.length === 0 || catFilters.includes(f.cat);
+
+                return matchSearch && matchType && matchCat;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-4 text-center text-slate-500 text-xs">Nenhuma formação encontrada com esses critérios combinados.</div>`;
+                return;
+            }
+
+            filtered.forEach(f => {
+                const isWatched = completedList.includes(f.id);
+                const isSelected = selectedFormationIdForRec === f.id;
+                const icon = f.tipo === 'video' ? '<i class="fa-solid fa-video text-fox-400"></i>' : '<i class="fa-solid fa-file-pdf text-rose-400"></i>';
+
+                container.innerHTML += `
+                    <div onclick="selectFormationCard(${f.id})" class="p-2.5 rounded-lg border cursor-pointer transition flex items-center justify-between ${isSelected ? 'bg-fox-500/20 border-fox-500 text-white shadow-md' : 'bg-fox-900 border-fox-800 hover:border-fox-500/40 text-slate-200'}">
+                        <div class="flex items-center space-x-2.5 overflow-hidden">
+                            <div class="p-1.5 rounded bg-fox-800/80 text-xs flex-shrink-0">${icon}</div>
+                            <div class="truncate">
+                                <p class="font-bold text-xs truncate">${f.titulo}</p>
+                                <p class="text-[10px] text-slate-400 truncate">${f.desc}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 flex-shrink-0">
+                            ${isWatched 
+                                ? '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/35">Assistido/Lido ✓</span>' 
+                                : '<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/35">Pendente</span>'}
+                            <div class="w-4 h-4 rounded-full border ${isSelected ? 'bg-fox-500 border-fox-400 flex items-center justify-center text-[10px] text-white font-bold' : 'border-slate-600'}">
+                                ${isSelected ? '✓' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function selectFormationCard(id) {
+            selectedFormationIdForRec = id;
+            document.getElementById('selected-rec-formacao-id').value = id;
+            renderRecommendationModalList();
+        }
+
         function viewMyProfile() {
-            document.getElementById('perfil-nome').innerText = document.getElementById('nav-user-name').innerText;
-            document.getElementById('perfil-email').innerText = "clara.raposa@sdp.org.br";
+            const clara = dbRaposinhas.find(m => m.id === 101) || dbRaposinhas[0];
+            currentViewingMember = clara;
+            document.getElementById('perfil-nome').innerText = clara.nome;
+            document.getElementById('perfil-email').innerText = clara.email;
             document.getElementById('perfil-avatar').src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80";
             document.getElementById('btn-back-acompanhamento').classList.add('hidden');
+            
+            // Exibe o botão de alterar dados e senha, pois é o próprio perfil
+            const btnEdit = document.getElementById('btn-edit-perfil-trigger');
+            if (btnEdit) btnEdit.classList.remove('hidden');
+
+            const btnRecProfile = document.getElementById('btn-add-rec-from-profile');
+            if (btnRecProfile) {
+                if (currentUserRole === 'diretor' || currentUserRole === 'admin') {
+                    btnRecProfile.classList.remove('hidden');
+                } else {
+                    btnRecProfile.classList.add('hidden');
+                }
+            }
+
+            renderProfileRecommendations(clara);
             navigateTo('perfil');
         }
 
         function viewMemberProfile(nome, email) {
-            document.getElementById('perfil-nome').innerText = nome;
-            document.getElementById('perfil-email').innerText = email;
-            document.getElementById('perfil-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(nome)}&background=ff6b00&color=fff&size=120`;
+            const member = dbRaposinhas.main ? null : dbRaposinhas.find(m => m.email === email || m.nome === nome) || { nome, email, recommendations: [], completedFormacoes: [] };
+            currentViewingMember = member;
+            document.getElementById('perfil-nome').innerText = member.nome;
+            document.getElementById('perfil-email').innerText = member.email;
+            document.getElementById('perfil-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.nome)}&background=ff6b00&color=fff&size=120`;
             document.getElementById('btn-back-acompanhamento').classList.remove('hidden');
+            
+            // Oculta o botão de alterar dados e senha, pois um diretor está inspecionando o perfil do membro
+            const btnEdit = document.getElementById('btn-edit-perfil-trigger');
+            if (btnEdit) btnEdit.classList.add('hidden');
+
+            const btnRecProfile = document.getElementById('btn-add-rec-from-profile');
+            if (btnRecProfile && (currentUserRole === 'diretor' || currentUserRole === 'admin')) {
+                btnRecProfile.classList.remove('hidden');
+            }
+
+            renderProfileRecommendations(member);
             navigateTo('perfil');
+        }
+
+        function renderProfileRecommendations(member) {
+            const container = document.getElementById('user-recommendations-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const recs = member.recommendations || [];
+            if (recs.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic">Nenhuma formação recomendada pela diretoria no momento.</p>`;
+                return;
+            }
+
+            recs.forEach(r => {
+                const isCompleted = (member.completedFormacoes || []).includes(r.formacaoId);
+                const icon = r.tipo === 'video' ? '<i class="fa-solid fa-video text-fox-400"></i>' : '<i class="fa-solid fa-file-pdf text-rose-400"></i>';
+                const formacaoObj = dbFormacoes.find(f => f.id === r.formacaoId) || { url: r.url || '#' };
+
+                container.innerHTML += `
+                    <div class="p-4 bg-fox-900 rounded-xl border border-fox-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="p-2.5 rounded-lg bg-fox-800 text-sm mt-0.5">${icon}</div>
+                            <div class="space-y-1">
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="font-bold text-sm text-white">${r.titulo}</h4>
+                                    <span class="text-[10px] text-slate-400">• ${r.date}</span>
+                                </div>
+                                <p class="text-xs text-fox-300 bg-fox-950/60 p-2 rounded border border-fox-500/20"><strong class="text-fox-400 font-semibold">Nota do Diretor:</strong> "${r.note}"</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
+                            <a href="${formacaoObj.url}" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-fox-800 hover:bg-fox-700 text-slate-200 text-xs font-semibold border border-fox-700 transition" title="Abrir Formação">
+                                <i class="fa-solid fa-external-link-alt mr-1"></i> Acessar
+                            </a>
+                            ${isCompleted 
+                                ? `<button onclick="toggleFormacaoCompletion(${r.formacaoId}); renderProfileRecommendations(currentViewingMember);" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/35 text-xs font-semibold transition flex items-center space-x-1" title="Clique para reverter (marcar como não visto)">
+                                     <span>Assistido ✓</span>
+                                     <i class="fa-solid fa-rotate-left text-[10px] ml-1 text-slate-400"></i>
+                                   </button>` 
+                                : `<button onclick="toggleFormacaoCompletion(${r.formacaoId}); renderProfileRecommendations(currentViewingMember);" class="px-3 py-1.5 rounded-lg fox-gradient text-white text-xs font-bold shadow hover:opacity-90 transition">
+                                     Marcar como Visto
+                                   </button>`}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function initCharts() {
@@ -1632,6 +1874,20 @@
                     }
                 });
             }
+        }
+
+        function filterPSChart(type) {
+            if (!chartPSInstance) return;
+            
+            const dataMap = {
+                'all': [13, 12, 11, 14, 12],
+                'Direto': [14, 13, 12, 13, 11],
+                'Referenciado': [12, 11, 14, 12, 14],
+                'Cenário': [11, 13, 13, 15, 13]
+            };
+
+            chartPSInstance.data.datasets[0].data = dataMap[type] || dataMap['all'];
+            chartPSInstance.update();
         }
 
         function openModal(id) {
@@ -1787,15 +2043,42 @@
 
         function handleVincularFormacaoSubmit(e) {
             e.preventDefault();
+            if (!selectedFormationIdForRec) {
+                showNotification('Por favor, selecione uma formação na lista acima.');
+                return;
+            }
+            const formacaoObj = dbFormacoes.find(f => f.id === parseInt(selectedFormationIdForRec));
+            const noteText = e.target.querySelector('textarea').value || 'Recomendado para aprimoramento técnico.';
+            
+            if (selectedMemberForRecommendation) {
+                if (!selectedMemberForRecommendation.recommendations) {
+                    selectedMemberForRecommendation.recommendations = [];
+                }
+                selectedMemberForRecommendation.recommendations.unshift({
+                    id: Date.now(),
+                    formacaoId: formacaoObj.id,
+                    titulo: formacaoObj.titulo,
+                    tipo: formacaoObj.tipo,
+                    url: formacaoObj.url,
+                    note: noteText,
+                    date: 'Hoje'
+                });
+            }
+
             closeModal('modal-vincular-formacao');
-            showNotification('Formação recomendada vinculada ao perfil!');
+            const memberName = selectedMemberForRecommendation ? selectedMemberForRecommendation.nome : 'o membro';
+            showNotification(`Recomendação de formação enviada com sucesso para ${memberName}!`);
+
+            if (currentViewingMember && selectedMemberForRecommendation && currentViewingMember.email === selectedMemberForRecommendation.email) {
+                renderProfileRecommendations(currentViewingMember);
+            }
+            renderAcompanhamentoTable();
         }
 
         function handleEditPerfilSubmit(e) {
             e.preventDefault();
             const nome = document.getElementById('edit-nome').value;
             const email = document.getElementById('edit-email').value;
-            const senha = document.getElementById('edit-senha').value;
 
             document.getElementById('perfil-nome').innerText = nome;
             document.getElementById('perfil-email').innerText = email;
@@ -1803,17 +2086,11 @@
             document.getElementById('mirante-user-display').innerText = nome;
 
             closeModal('modal-edit-perfil');
-            
-            if (senha.trim() !== '') {
-                showNotification('Dados cadastrais e senha atualizados com sucesso!');
-                document.getElementById('edit-senha').value = '';
-            } else {
-                showNotification('Dados cadastrais atualizados!');
-            }
+            showNotification('Dados cadastrais e senha atualizados com sucesso!');
         }
 
         function sendWhatsAppIndication(nome) {
-            const msg = encodeURIComponent(`Olá ${nome}! Analisei seus gráficos no Mirante da Raposa e recomendo que assista à formação na plataforma SDP.`);
+            const msg = encodeURIComponent(`Olá ${nome}! Analisei seus gráficos no Mirante da Raposa e recomendo que assista à formação de Framing na plataforma SDP.`);
             window.open(`https://wa.me/?text=${msg}`, '_blank');
         }
 
